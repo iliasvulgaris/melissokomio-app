@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#9b6b19">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Μελισσοκομείο — Καταγραφή</title>
+<style>
+:root{--bg:#f6f3eb;--paper:#fffdf8;--ink:#28251f;--muted:#777064;--gold:#a66d13;--line:#e8dfcf;--green:#47734b;--red:#a34837}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:#332b1e;color:#fff;padding:22px max(18px,calc((100% - 1100px)/2));}
+header .sub{color:#e6d9bd;font-size:14px}h1{font-size:25px;margin:0 0 4px}main{max-width:1100px;margin:22px auto;padding:0 16px 48px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab,button{border:0;border-radius:11px;padding:11px 15px;font:inherit;font-weight:650;cursor:pointer}
+.tab{background:#e9e1d2;color:#4a4030}.tab.active{background:var(--gold);color:white}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 3px 12px #38270c0a}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}.stat{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:15px}.stat b{display:block;font-size:26px}.stat span{font-size:13px;color:var(--muted)}
+h2{font-size:19px;margin:0 0 14px}h3{font-size:16px;margin:0 0 8px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}label{font-size:13px;color:#625b50;font-weight:650}
+input,select,textarea{width:100%;border:1px solid #d9cfbd;border-radius:9px;padding:11px;background:#fffefa;color:var(--ink);font:inherit}textarea{min-height:82px;resize:vertical}
+.primary{background:var(--gold);color:#fff}.secondary{background:#eee7da;color:#403729}.danger{background:#f4e2dc;color:var(--red)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.muted{color:var(--muted);font-size:13px}.hive-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.hive{border:1px solid var(--line);border-radius:13px;padding:14px;background:#fffefa}.hive-photo{width:100%;max-height:190px;object-fit:cover;border-radius:10px;margin:8px 0}.photo-preview{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.photo-preview img{width:112px;height:84px;object-fit:cover;border-radius:9px;border:1px solid var(--line)}.inspection-photos{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0}.inspection-photos img{width: min(100%,220px);max-height:190px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}.voice-box{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fffefa}.voice-status{font-size:13px;color:var(--muted);margin:8px 0}.voice-box audio{width:100%;margin-top:8px}.hive-top{display:flex;justify-content:space-between;gap:8px;align-items:start}.hive strong{font-size:17px}.pill{background:#f3ead8;color:#74500f;border-radius:99px;padding:4px 9px;font-size:12px;white-space:nowrap}
+.hidden{display:none!important}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.toolbar input{max-width:300px}.notice{background:#edf3e9;border:1px solid #d5e3cf;padding:11px 13px;border-radius:10px;color:#35563a;font-size:13px;margin-bottom:14px}
+.bulk-hives{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.bulk-hives label{display:flex;align-items:center;gap:7px;padding:8px;border:1px solid var(--line);border-radius:8px;background:#fffefa}.bulk-hives input{width:auto}
+.empty{padding:24px;text-align:center;color:var(--muted);border:1px dashed #d8cdbb;border-radius:12px}
+.available-grid{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.available-grid button{background:#eee7da;color:#403729;padding:8px 11px;font-size:14px}.available-grid button:active{background:var(--gold);color:#fff}.availability-summary{font-size:13px;color:var(--muted);margin-top:8px}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px}
+@media print{body{background:#fff;color:#000;font-size:11pt}header{background:#fff;color:#000;padding:0 0 12px}header .sub{color:#333}main{max-width:none;margin:0;padding:0}.notice,.tabs,button,.toolbar input,footer,.actions{display:none!important}.panel,.hive{box-shadow:none;border:0;padding:6px;margin:0;break-inside:avoid}.hive-list{display:block}.hive{border-bottom:1px solid #bbb;border-radius:0}.hive-photo,.inspection-photos img{max-height:110px;width:auto}.hidden{display:none!important}body.print-history #history{display:block!important}body.print-bulk #bulkInspection{display:block!important}}
+@media(max-width:700px){.bulk-hives{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(2,1fr)}.hive-list{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.field.full{grid-column:auto}header{padding:18px}main{margin-top:14px}.tab{flex:1}}
+</style>
+</head>
+<body>
+<header><h1>🐝 Το Μελισσοκομείο μου</h1><div class="sub">Ημερολόγιο κυψελών και επιθεωρήσεων — λειτουργεί και χωρίς σύνδεση</div></header>
+<main>
+<div class="notice" id="saveNotice">✓ Οι καταχωρίσεις αποθηκεύονται αυτόματα σε αυτή τη συσκευή. Κάνε τακτικά εξαγωγή αντιγράφου ασφαλείας.</div>
+<nav class="tabs">
+<button class="tab active" data-tab="dashboard">Επισκόπηση</button>
+<button class="tab" data-tab="hives">Κυψέλες</button>
+<button class="tab" data-tab="inspection">Νέα επιθεώρηση</button>
+<button class="tab" data-tab="bulkInspection">Συγκεντρωτική</button>
+<button class="tab" data-tab="history">Ιστορικό</button>
+<button class="tab" data-tab="charts">Γραφήματα</button>
+<button class="tab" data-tab="backup">Αντίγραφο</button>
+</nav>
+
+<section id="dashboard">
+<div class="stats">
+<div class="stat"><b id="statHives">0</b><span>Κυψέλες</span></div>
+<div class="stat"><b id="statInspections">0</b><span>Επιθεωρήσεις</span></div>
+<div class="stat"><b id="statStrong">0</b><span>Με 8+ πλαίσια</span></div>
+<div class="stat"><b id="statNeeds">0</b><span>Με 4 ή λιγότερα</span></div>
+</div>
+<div class="panel"><h2>Πρόσφατες επιθεωρήσεις</h2><div id="recent"></div></div>
+<div class="panel"><h2>Γρήγορη καταχώριση</h2><p class="muted">Πρόσθεσε μια κυψέλη ή ξεκίνα νέα επιθεώρηση.</p><div class="actions"><button class="primary" onclick="showTab('hives')">+ Προσθήκη κυψέλης</button><button class="secondary" onclick="showTab('inspection')">+ Επιθεώρηση</button></div></div>
+</section>
+
+<section id="hives" class="hidden">
+<div class="panel">
+<h2>Προσθήκη / επεξεργασία κυψέλης</h2>
+<p class="muted">Μπορείς να προσθέτεις κυψέλες μία-μία ή να δημιουργήσεις μαζικά τις αριθμημένες κυψέλες 1–100. Οι ήδη υπάρχουσες δεν θα πειραχτούν.</p>
+<div class="actions" style="margin:0 0 14px"><button class="secondary" type="button" onclick="createHives1to100()">Δημιουργία κυψελών 1–100</button></div>
+<div class="panel" style="background:#faf7f0;margin-bottom:16px">
+<h3>Διαθέσιμοι αριθμοί και γράμματα</h3>
+<p class="muted">Διάλεξε τρόπο αρίθμησης. Οι θέσεις που έχουν ήδη καταχωριστεί δεν εμφανίζονται.</p>
+<div class="grid">
+<div class="field"><label for="availabilityMode">Τρόπος αρίθμησης</label><select id="availabilityMode"><option value="numbers">Μόνο αριθμοί (1–100)</option><option value="letters">Μόνο ελληνικά γράμματα (Α–Ω)</option><option value="combined">Αριθμός και γράμμα (1Α, 1Β…)</option></select></div>
+<div class="field"><label for="availabilitySearch">Αναζήτηση διαθέσιμης θέσης</label><input id="availabilitySearch" placeholder="π.χ. 25 ή Α"></div>
+</div>
+<div id="availabilitySummary" class="availability-summary"></div>
+<div id="availableChoices" class="available-grid"></div>
+</div>
+<form id="hiveForm" class="grid">
+<input type="hidden" id="hiveEditId">
+<div class="field"><label for="hiveNumber">Αριθμός κυψέλης *</label><input id="hiveNumber" required placeholder="π.χ. 001"></div>
+<div class="field"><label for="hiveLocation">Τοποθεσία / μελισσοκομείο</label><input id="hiveLocation" placeholder="π.χ. Μελισσοκομείο Α"></div>
+<div class="field"><label for="hiveFrames">Πλαίσια (τρέχουσα εκτίμηση)</label><input id="hiveFrames" type="number" min="0" max="30" value="0"></div>
+<div class="field"><label for="hiveQueen">Βασίλισσα</label><select id="hiveQueen"><option>Άγνωστο</option><option>Παρούσα</option><option>Δεν εντοπίστηκε</option><option>Νέα</option><option>Παλιά</option></select></div>
+<div class="field full"><label for="hiveNotes">Σημειώσεις</label><textarea id="hiveNotes" placeholder="Προέλευση, χαρακτηριστικά κ.λπ."></textarea></div>
+<div class="field full">
+<label for="hivePhoto">Φωτογραφία κυψέλης</label>
+<input id="hivePhoto" type="file" accept="image/*" capture="environment">
+<div class="photo-preview" id="hivePhotoPreview"><span class="muted">Δεν έχει επιλεγεί φωτογραφία.</span></div>
+<p class="muted">Μπορείς να τραβήξεις φωτογραφία ή να επιλέξεις από τη συλλογή. Η εικόνα μικραίνει αυτόματα για εξοικονόμηση χώρου.</p>
+<div><button class="secondary" type="button" id="removeHivePhoto">Αφαίρεση φωτογραφίας</button></div>
+</div>
+<div class="field full"><div class="actions"><button class="primary" type="submit">Αποθήκευση κυψέλης</button><button class="secondary" type="button" onclick="resetHiveForm()">Καθαρισμός</button></div></div>
+</form></div>
+<div class="panel"><div class="toolbar"><h2 style="margin:0">Οι κυψέλες μου</h2><input id="hiveSearch" placeholder="Αναζήτηση αριθμού ή τοποθεσίας"></div><div id="hiveList" style="margin-top:14px"></div></div>
+</section>
+
+<section id="inspection" class="hidden">
+<div class="panel"><h2>Καταχώριση επιθεώρησης</h2>
+<form id="inspectionForm" class="grid">
+<div class="field"><label for="inspHive">Κυψέλη *</label><select id="inspHive" required></select><div id="inspHivePhoto" class="photo-preview" style="margin-top:9px"><span class="muted">Επίλεξε κυψέλη για να εμφανιστεί η φωτογραφία της.</span></div></div>
+<div class="field"><label for="inspDate">Ημερομηνία *</label><input id="inspDate" type="date" required></div>
+<div class="field"><label for="inspFrames">Πλαίσια με πληθυσμό</label><input id="inspFrames" type="number" min="0" max="30" placeholder="π.χ. 7"></div>
+<div class="field"><label for="inspBrood">Γόνος</label><select id="inspBrood"><option>Δεν ελέγχθηκε</option><option>Αυγά και προνύμφες</option><option>Σφραγισμένος</option><option>Ανοιχτός και σφραγισμένος</option><option>Λίγος</option><option>Δεν υπάρχει</option></select></div>
+<div class="field"><label for="inspQueen">Βασίλισσα</label><select id="inspQueen"><option>Δεν ελέγχθηκε</option><option>Εντοπίστηκε</option><option>Δεν εντοπίστηκε</option><option>Νέα</option><option>Υπάρχουν αυγά</option></select></div>
+<div class="field"><label for="inspStores">Γενική εικόνα αποθεμάτων</label><select id="inspStores"><option>Επαρκείς</option><option>Μέτριες</option><option>Λίγες</option><option>Χρειάζεται τροφοδότηση</option><option>Δεν ελέγχθηκαν</option></select></div>
+<div class="field"><label for="inspHoney">Αποθέματα μελιού</label><select id="inspHoney"><option>Δεν ελέγχθηκαν</option><option>Πολλά</option><option>Επαρκή</option><option>Λίγα</option><option>Καθόλου</option></select></div>
+<div class="field"><label for="inspFeed">Τροφοδότηση</label><select id="inspFeed"><option>Δεν έγινε</option><option>Σιρόπι</option><option>Ζυμάρι</option><option>Σιρόπι και ζυμάρι</option><option>Άλλη τροφοδότηση</option></select></div>
+<div class="field"><label for="inspTemper">Συμπεριφορά</label><select id="inspTemper"><option>Ήρεμη</option><option>Κανονική</option><option>Επιθετική</option><option>Δεν ελέγχθηκε</option></select></div>
+<div class="field"><label for="inspHealth">Υγεία / γενικές παρατηρήσεις</label><input id="inspHealth" placeholder="π.χ. γενική εικόνα"></div>
+<div class="field"><label for="inspDisease">Ασθένεια ή πρόβλημα</label><input id="inspDisease" placeholder="π.χ. ύποπτα σημάδια / κανένα"></div>
+<div class="field"><label for="inspTreatment">Θεραπεία / αγωγή</label><input id="inspTreatment" placeholder="Τι καταγράφηκε ότι έγινε"></div>
+<div class="field full"><label for="inspActions">Άλλες εργασίες που έγιναν</label><textarea id="inspActions" placeholder="Τροφοδότηση, προσθήκη πλαισίων, θεραπεία κ.λπ."></textarea></div>
+<div class="field full"><label for="inspNotes">Γενικές σημειώσεις</label><textarea id="inspNotes"></textarea></div>
+<div class="field full"><label>Φωνητικές σημειώσεις</label><div class="voice-box">
+<div class="actions"><button class="secondary" type="button" id="recordStart">● Έναρξη ηχογράφησης</button><button class="secondary" type="button" id="recordStop" disabled>■ Διακοπή</button></div>
+<div id="recordStatus" class="voice-status">Μπορείς να ηχογραφήσεις έως 60 δευτερόλεπτα. Η εγγραφή αποθηκεύεται μαζί με την επιθεώρηση.</div>
+<div id="audioPreview"></div>
+<hr style="border:0;border-top:1px solid var(--line);margin:12px 0">
+<div class="actions"><button class="secondary" type="button" id="dictationStart">🎙 Υπαγόρευση σημειώσεων</button><button class="secondary" type="button" id="dictationStop" disabled>Διακοπή υπαγόρευσης</button></div>
+<div id="dictationStatus" class="voice-status">Τα λόγια σου θα προστεθούν στις «Γενικές σημειώσεις».</div>
+</div></div>
+<div class="field full"><label for="inspPhotos">Φωτογραφίες από αυτή την επιθεώρηση</label><input id="inspPhotos" type="file" accept="image/*" capture="environment" multiple><div id="inspPhotoPreview" class="photo-preview"><span class="muted">Προαιρετικά: φωτογράφισε γόνο, πλαίσια, βασίλισσα ή κάτι που παρατήρησες.</span></div><p class="muted">Μπορείς να προσθέσεις περισσότερες από μία φωτογραφίες. Αποθηκεύονται μαζί με τη συγκεκριμένη επιθεώρηση.</p></div>
+<div class="field full"><div class="actions"><button class="primary" type="submit">Αποθήκευση επιθεώρησης</button></div></div>
+</form></div>
+</section>
+
+<section id="bulkInspection" class="hidden">
+<div class="panel"><h2>Συγκεντρωτική επιθεώρηση</h2>
+<p class="muted">Επίλεξε πολλές κυψέλες και συμπλήρωσε μία κοινή καταχώριση. Θα δημιουργηθεί ξεχωριστή επιθεώρηση για κάθε επιλεγμένη κυψέλη.</p>
+<div class="actions"><button class="secondary" type="button" onclick="selectBulkHives(true)">Επιλογή όλων</button><button class="secondary" type="button" onclick="selectBulkHives(false)">Καθαρισμός επιλογών</button></div>
+<div id="bulkHiveList" class="bulk-hives" style="margin:12px 0"></div>
+<form id="bulkForm" class="grid">
+<div class="field"><label for="bulkDate">Ημερομηνία *</label><input id="bulkDate" type="date" required></div>
+<div class="field"><label for="bulkFrames">Πλαίσια με πληθυσμό (κοινή τιμή, προαιρετικά)</label><input id="bulkFrames" type="number" min="0" max="30" placeholder="Άφησε κενό αν διαφέρουν"></div>
+<div class="field"><label for="bulkBrood">Γόνος</label><select id="bulkBrood"><option>Δεν ελέγχθηκε</option><option>Αυγά και προνύμφες</option><option>Σφραγισμένος</option><option>Ανοιχτός και σφραγισμένος</option><option>Λίγος</option><option>Δεν υπάρχει</option></select></div>
+<div class="field"><label for="bulkQueen">Βασίλισσα</label><select id="bulkQueen"><option>Δεν ελέγχθηκε</option><option>Εντοπίστηκε</option><option>Δεν εντοπίστηκε</option><option>Νέα</option><option>Υπάρχουν αυγά</option></select></div>
+<div class="field"><label for="bulkStores">Γενική εικόνα αποθεμάτων</label><select id="bulkStores"><option>Επαρκείς</option><option>Μέτριες</option><option>Λίγες</option><option>Χρειάζεται τροφοδότηση</option><option>Δεν ελέγχθηκαν</option></select></div>
+<div class="field"><label for="bulkHoney">Αποθέματα μελιού</label><select id="bulkHoney"><option>Δεν ελέγχθηκαν</option><option>Πολλά</option><option>Επαρκή</option><option>Λίγα</option><option>Καθόλου</option></select></div>
+<div class="field"><label for="bulkFeed">Τροφοδότηση</label><select id="bulkFeed"><option>Δεν έγινε</option><option>Σιρόπι</option><option>Ζυμάρι</option><option>Σιρόπι και ζυμάρι</option><option>Άλλη τροφοδότηση</option></select></div>
+<div class="field"><label for="bulkTemper">Συμπεριφορά</label><select id="bulkTemper"><option>Ήρεμη</option><option>Κανονική</option><option>Επιθετική</option><option>Δεν ελέγχθηκε</option></select></div>
+<div class="field"><label for="bulkHealth">Υγεία / παρατηρήσεις</label><input id="bulkHealth"></div>
+<div class="field"><label for="bulkDisease">Ασθένεια ή πρόβλημα</label><input id="bulkDisease"></div>
+<div class="field"><label for="bulkTreatment">Θεραπεία / αγωγή</label><input id="bulkTreatment"></div>
+<div class="field full"><label for="bulkActions">Εργασίες που έγιναν</label><textarea id="bulkActions"></textarea></div>
+<div class="field full"><label for="bulkNotes">Γενικές σημειώσεις</label><textarea id="bulkNotes"></textarea></div>
+<div class="field full"><div class="actions"><button class="primary" type="submit">Καταχώριση σε όλες τις επιλεγμένες κυψέλες</button></div></div>
+</form></div></section>
+<section id="history" class="hidden"><div class="panel"><div class="toolbar"><h2 style="margin:0">Ιστορικό επιθεωρήσεων</h2><input id="historySearch" placeholder="Αναζήτηση κυψέλης"></div><div class="actions"><button class="primary" type="button" onclick="printHistory()">Εκτύπωση ιστορικού</button></div><div id="historyList" style="margin-top:14px"></div></div></section>
+
+<section id="charts" class="hidden">
+<div class="panel">
+<h2>Πορεία κάθε κυψέλης</h2>
+<p class="muted">Το γράφημα δείχνει πώς μεταβάλλονται τα πλαίσια με πληθυσμό στις διαδοχικές επιθεωρήσεις. Χρειάζονται τουλάχιστον καταχωρίσεις με αριθμό πλαισίων.</p>
+<div class="field" style="max-width:420px"><label for="chartHive">Επίλεξε κυψέλη</label><select id="chartHive"></select></div>
+<div id="hiveChart" style="margin-top:18px"></div>
+<div id="chartSummary" class="muted" style="margin-top:12px"></div>
+</div>
+</section>
+
+<section id="backup" class="hidden"><div class="panel"><h2>Αντίγραφο ασφαλείας</h2><p>Εξήγαγε όλα τα δεδομένα σου σε αρχείο JSON. Μπορείς να το φυλάξεις και να το εισαγάγεις ξανά σε αυτή ή σε άλλη συσκευή.</p><div class="actions"><button class="primary" onclick="exportData()">Λήψη αντιγράφου</button><label class="secondary" style="display:inline-flex;align-items:center;cursor:pointer">Εισαγωγή αντιγράφου<input id="importFile" type="file" accept="application/json,.json" hidden></label></div><p class="muted">Σημαντικό: τα δεδομένα αποθηκεύονται τοπικά στη συσκευή και δεν συγχρονίζονται αυτόματα μεταξύ κινητού και υπολογιστή. Για μεταφορά χρησιμοποίησε το αντίγραφο ασφαλείας.</p></div></section>
+<footer>Μελισσοκομείο · Αποθήκευση στη συσκευή · Έκδοση 1.8 · εγκαταστάσιμη με διαθέσιμες θέσεις</footer>
+</main>
+<script>
+const KEY='beekeeping_log_v1';
+let db=load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{hives:[],inspections:[]}}catch(e){return{hives:[],inspections:[]}}}
+function save(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify(db));
+    render();
+    const n=document.getElementById('saveNotice');
+    if(n)n.textContent='✓ Η αποθήκευση ολοκληρώθηκε σε αυτή τη συσκευή.';
+    return true;
+  }catch(e){
+    const n=document.getElementById('saveNotice');
+    if(n)n.textContent='⚠ Δεν έγινε αποθήκευση. Έλεγξε τον διαθέσιμο χώρο ή κάνε εξαγωγή αντιγράφου.';
+    alert('Προσοχή: Δεν ήταν δυνατή η αποθήκευση στη συσκευή. Κάνε λήψη αντιγράφου ασφαλείας.');
+    return false;
+  }
+}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function showTab(id){document.querySelectorAll('section').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='inspection')fillHiveSelect();if(id==='bulkInspection')renderBulkHiveList();if(id==='charts'){fillChartHiveSelect();drawHiveChart()}}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+function makeId(){return (window.crypto&&crypto.randomUUID)?crypto.randomUUID():'hive-'+Date.now()+'-'+Math.random().toString(16).slice(2)}
+function createHives1to100(){
+  const existing=new Set(db.hives.map(h=>String(h.number).trim()));
+  const missing=[];
+  for(let n=1;n<=100;n++)if(!existing.has(String(n))&&!existing.has(String(n).padStart(3,'0')))missing.push({id:makeId(),number:String(n),location:'',frames:0,queen:'Άγνωστο',notes:''});
+  if(!missing.length){alert('Υπάρχουν ήδη καταχωρισμένες και οι 100 αριθμημένες κυψέλες.');return;}
+  if(!confirm('Θα προστεθούν '+missing.length+' κυψέλες που λείπουν από το 1 έως το 100. Οι υπάρχουσες κυψέλες και επιθεωρήσεις θα διατηρηθούν. Συνέχεια;'))return;
+  db.hives.push(...missing);
+  if(save())alert('Προστέθηκαν '+missing.length+' κυψέλες. Οι παλιές καταχωρίσεις διατηρήθηκαν.');
+}
+
+// Η φωτογραφία αποθηκεύεται μαζί με την κυψέλη, στην ίδια τοπική βάση δεδομένων.
+let pendingHivePhoto=undefined;
+function showHivePhotoPreview(data){
+  const box=document.getElementById('hivePhotoPreview');
+  box.innerHTML=data?`<img src="${data}" alt="Φωτογραφία κυψέλης"><span class="muted">Η φωτογραφία είναι έτοιμη.</span>`:'<span class="muted">Δεν έχει επιλεγεί φωτογραφία.</span>';
+}
+function resizeHivePhoto(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onerror=()=>reject(new Error('Δεν ήταν δυνατή η ανάγνωση της φωτογραφίας.'));
+    reader.onload=()=>{
+      const img=new Image();
+      img.onerror=()=>reject(new Error('Το αρχείο εικόνας δεν υποστηρίζεται.'));
+      img.onload=()=>{
+        const max=520, scale=Math.min(1,max/Math.max(img.width,img.height));
+        const canvas=document.createElement('canvas');
+        canvas.width=Math.max(1,Math.round(img.width*scale));
+        canvas.height=Math.max(1,Math.round(img.height*scale));
+        const ctx=canvas.getContext('2d');
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        resolve(canvas.toDataURL('image/jpeg',0.55));
+      };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+document.getElementById('hivePhoto').addEventListener('change',async e=>{
+  const file=e.target.files&&e.target.files[0];
+  if(!file)return;
+  if(!file.type.startsWith('image/')){alert('Επίλεξε αρχείο φωτογραφίας.');e.target.value='';return;}
+  try{
+    pendingHivePhoto=await resizeHivePhoto(file);
+    showHivePhotoPreview(pendingHivePhoto);
+  }catch(err){alert(err.message||'Δεν ήταν δυνατή η επεξεργασία της φωτογραφίας.');}
+});
+document.getElementById('removeHivePhoto').addEventListener('click',()=>{
+  pendingHivePhoto=null;
+  document.getElementById('hivePhoto').value='';
+  showHivePhotoPreview('');
+});
+const greekHiveLetters=['Α','Β','Γ','Δ','Ε','Ζ','Η','Θ','Ι','Κ','Λ','Μ','Ν','Ξ','Ο','Π','Ρ','Σ','Τ','Υ','Φ','Χ','Ψ','Ω'];
+function getAvailableHiveLabels(){
+  const editingId=document.getElementById('hiveEditId').value;
+  const used=new Set(db.hives.filter(h=>h.id!==editingId).map(h=>String(h.number).trim().toLocaleUpperCase('el-GR')));
+  const mode=document.getElementById('availabilityMode').value;
+  if(mode==='letters')return greekHiveLetters.filter(x=>!used.has(x));
+  if(mode==='combined'){
+    const all=[];for(let n=1;n<=100;n++)for(const letter of greekHiveLetters)all.push(String(n)+letter);
+    return all.filter(x=>!used.has(x));
+  }
+  return Array.from({length:100},(_,i)=>String(i+1)).filter(x=>!used.has(x)&&!used.has(x.padStart(3,'0')));
+}
+function renderAvailableHiveLabels(){
+  const mode=document.getElementById('availabilityMode');if(!mode)return;
+  const all=getAvailableHiveLabels();const query=document.getElementById('availabilitySearch').value.trim().toLocaleUpperCase('el-GR');
+  const filtered=all.filter(x=>!query||x.includes(query));const shown=filtered.slice(0,160);
+  document.getElementById('availabilitySummary').textContent=`Διαθέσιμες θέσεις: ${all.length} · Ταιριάζουν στην αναζήτηση: ${filtered.length}`+(filtered.length>160?' · Εμφανίζονται οι πρώτες 160 — γράψε αναζήτηση για να περιορίσεις τη λίστα.':'');
+  const box=document.getElementById('availableChoices');
+  box.innerHTML=shown.length?shown.map(x=>`<button type="button" data-hive-label="${x}">${x}</button>`).join(''):'<span class="muted">Δεν υπάρχουν διαθέσιμες θέσεις με αυτά τα κριτήρια.</span>';
+  box.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{document.getElementById('hiveNumber').value=b.dataset.hiveLabel;document.getElementById('hiveNumber').focus();}));
+}
+document.getElementById('availabilityMode').addEventListener('change',renderAvailableHiveLabels);
+document.getElementById('availabilitySearch').addEventListener('input',renderAvailableHiveLabels);
+function resetHiveForm(){document.getElementById('hiveForm').reset();document.getElementById('hiveEditId').value='';document.getElementById('hiveFrames').value=0;pendingHivePhoto=undefined;showHivePhotoPreview('');renderAvailableHiveLabels()}
+document.getElementById('hiveForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const id=document.getElementById('hiveEditId').value;
+  const existing=db.hives.find(x=>x.id===id);
+  const h={
+    id:id||makeId(),
+    number:document.getElementById('hiveNumber').value.trim(),
+    location:document.getElementById('hiveLocation').value.trim(),
+    frames:Number(document.getElementById('hiveFrames').value||0),
+    queen:document.getElementById('hiveQueen').value,
+    notes:document.getElementById('hiveNotes').value.trim(),
+    photo:pendingHivePhoto!==undefined?pendingHivePhoto:(existing?.photo||'')
+  };
+  if(!h.number)return;
+  if(db.hives.some(x=>x.number.trim().toLocaleUpperCase('el-GR')===h.number.trim().toLocaleUpperCase('el-GR')&&x.id!==id)){alert('Υπάρχει ήδη κυψέλη με αυτόν τον αριθμό.');return}
+  if(id)db.hives=db.hives.map(x=>x.id===id?h:x);else db.hives.push(h);
+  if(save())resetHiveForm();
+  renderAvailableHiveLabels();
+});
+function editHive(id){const h=db.hives.find(x=>x.id===id);if(!h)return;showTab('hives');document.getElementById('hiveEditId').value=h.id;document.getElementById('hiveNumber').value=h.number;document.getElementById('hiveLocation').value=h.location;document.getElementById('hiveFrames').value=h.frames;document.getElementById('hiveQueen').value=h.queen;document.getElementById('hiveNotes').value=h.notes;pendingHivePhoto=undefined;document.getElementById('hivePhoto').value='';showHivePhotoPreview(h.photo||'');renderAvailableHiveLabels();window.scrollTo({top:0,behavior:'smooth'})}
+function deleteHive(id){if(!confirm('Να διαγραφεί η κυψέλη; Οι επιθεωρήσεις της θα παραμείνουν στο ιστορικό.'))return;db.hives=db.hives.filter(x=>x.id!==id);save()}
+function fillHiveSelect(){const s=document.getElementById('inspHive');const old=s.value;s.innerHTML='<option value="">Επίλεξε κυψέλη</option>'+db.hives.slice().sort((a,b)=>a.number.localeCompare(b.number,undefined,{numeric:true})).map(h=>`<option value="${h.id}">${esc(h.number)}${h.location?' — '+esc(h.location):''}</option>`).join('');if(db.hives.some(h=>h.id===old))s.value=old;showInspectionHivePhoto()}
+function showInspectionHivePhoto(){const box=document.getElementById('inspHivePhoto');if(!box)return;const h=db.hives.find(x=>x.id===document.getElementById('inspHive').value);box.innerHTML=h&&h.photo?`<img src="${h.photo}" alt="Φωτογραφία κυψέλης ${esc(h.number)}"><span class="muted">Φωτογραφία κυψέλης ${esc(h.number)}</span>`:'<span class="muted">Δεν υπάρχει φωτογραφία για αυτή την κυψέλη.</span>'}
+document.getElementById('inspHive').addEventListener('change',showInspectionHivePhoto);
+let pendingInspectionPhotos=[];
+
+let pendingInspectionAudio='';
+let mediaRecorder=null;
+let recordingChunks=[];
+let recordingLimit=null;
+let recognition=null;
+function showAudioPreview(){
+  const box=document.getElementById('audioPreview');
+  if(!box)return;
+  box.innerHTML=pendingInspectionAudio?`<audio controls preload="metadata" src="${pendingInspectionAudio}"></audio><div class="actions"><button class="danger" type="button" id="removeAudio">Αφαίρεση ηχογράφησης</button></div>`:'<span class="muted">Δεν υπάρχει ηχογράφηση.</span>';
+  const remove=document.getElementById('removeAudio');
+  if(remove)remove.addEventListener('click',()=>{pendingInspectionAudio='';showAudioPreview();});
+}
+async function startRecording(){
+  if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){
+    alert('Η ηχογράφηση δεν υποστηρίζεται από αυτόν τον browser. Δοκίμασε Chrome ή νεότερο browser.');
+    return;
+  }
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    let options={};
+    if(MediaRecorder.isTypeSupported('audio/webm;codecs=opus'))options.mimeType='audio/webm;codecs=opus';
+    else if(MediaRecorder.isTypeSupported('audio/mp4'))options.mimeType='audio/mp4';
+    mediaRecorder=new MediaRecorder(stream,{audioBitsPerSecond:32000,...options});
+    recordingChunks=[];
+    mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size)recordingChunks.push(e.data);};
+    mediaRecorder.onstop=()=>{
+      clearTimeout(recordingLimit);
+      const blob=new Blob(recordingChunks,{type:mediaRecorder.mimeType||'audio/webm'});
+      stream.getTracks().forEach(t=>t.stop());
+      if(blob.size>0){
+        const reader=new FileReader();
+        reader.onload=()=>{
+          pendingInspectionAudio=reader.result;
+          showAudioPreview();
+          document.getElementById('recordStatus').textContent='Η ηχογράφηση είναι έτοιμη και θα αποθηκευτεί με την επιθεώρηση.';
+        };
+        reader.readAsDataURL(blob);
+      }
+      document.getElementById('recordStart').disabled=false;
+      document.getElementById('recordStop').disabled=true;
+    };
+    mediaRecorder.start();
+    document.getElementById('recordStart').disabled=true;
+    document.getElementById('recordStop').disabled=false;
+    document.getElementById('recordStatus').textContent='Γίνεται ηχογράφηση… Μπορείς να τη διακόψεις νωρίτερα.';
+    recordingLimit=setTimeout(()=>{if(mediaRecorder&&mediaRecorder.state==='recording')mediaRecorder.stop();},60000);
+  }catch(err){
+    alert('Δεν δόθηκε άδεια χρήσης μικροφώνου ή δεν είναι διαθέσιμο: '+(err.message||''));
+  }
+}
+function stopRecording(){
+  if(mediaRecorder&&mediaRecorder.state==='recording')mediaRecorder.stop();
+}
+function startDictation(){
+  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SpeechRecognition){
+    document.getElementById('dictationStatus').textContent='Η υπαγόρευση δεν υποστηρίζεται σε αυτόν τον browser. Δοκίμασε Chrome σε Android.';
+    return;
+  }
+  if(recognition){try{recognition.stop()}catch(e){}}
+  recognition=new SpeechRecognition();
+  recognition.lang='el-GR';
+  recognition.continuous=true;
+  recognition.interimResults=true;
+  let finalText='';
+  recognition.onresult=event=>{
+    let interim='';
+    for(let n=event.resultIndex;n<event.results.length;n++){
+      const part=event.results[n][0].transcript;
+      if(event.results[n].isFinal)finalText+=part+' ';
+      else interim+=part;
+    }
+    const notes=document.getElementById('inspNotes');
+    const existing=notes.dataset.dictationBase||'';
+    notes.value=existing+(finalText?((existing&&!existing.endsWith(' ')?' ':'')+finalText):'');
+    document.getElementById('dictationStatus').textContent=interim?'Ακούω: '+interim:'Η υπαγόρευση προστίθεται στις σημειώσεις.';
+  };
+  recognition.onerror=event=>{
+    document.getElementById('dictationStatus').textContent='Σφάλμα υπαγόρευσης: '+event.error+'. Έλεγξε την άδεια μικροφώνου και τη σύνδεση, αν ζητηθεί από τον browser.';
+    document.getElementById('dictationStart').disabled=false;
+    document.getElementById('dictationStop').disabled=true;
+  };
+  recognition.onend=()=>{
+    const notes=document.getElementById('inspNotes');
+    notes.dataset.dictationBase=notes.value;
+    document.getElementById('dictationStart').disabled=false;
+    document.getElementById('dictationStop').disabled=true;
+    document.getElementById('dictationStatus').textContent='Η υπαγόρευση ολοκληρώθηκε. Το κείμενο βρίσκεται στις γενικές σημειώσεις.';
+  };
+  const notes=document.getElementById('inspNotes');
+  notes.dataset.dictationBase=notes.value?notes.value+' ':'';
+  recognition.start();
+  document.getElementById('dictationStart').disabled=true;
+  document.getElementById('dictationStop').disabled=false;
+  document.getElementById('dictationStatus').textContent='Μίλησε καθαρά στα ελληνικά…';
+}
+function stopDictation(){if(recognition){try{recognition.stop()}catch(e){}}}
+document.getElementById('recordStart').addEventListener('click',startRecording);
+document.getElementById('recordStop').addEventListener('click',stopRecording);
+document.getElementById('dictationStart').addEventListener('click',startDictation);
+document.getElementById('dictationStop').addEventListener('click',stopDictation);
+showAudioPreview();
+
+function showInspectionPhotoPreview(){const box=document.getElementById('inspPhotoPreview');box.innerHTML=pendingInspectionPhotos.length?pendingInspectionPhotos.map((src,n)=>`<img src="${src}" alt="Φωτογραφία επιθεώρησης ${n+1}">`).join(''):'<span class="muted">Δεν έχει επιλεγεί φωτογραφία.</span>'}
+document.getElementById('inspPhotos').addEventListener('change',async e=>{
+  const files=Array.from(e.target.files||[]);if(!files.length)return;
+  const valid=files.filter(f=>f.type.startsWith('image/'));
+  if(valid.length!==files.length)alert('Παραλείφθηκαν αρχεία που δεν είναι φωτογραφίες.');
+  try{const converted=await Promise.all(valid.map(resizeHivePhoto));pendingInspectionPhotos.push(...converted);showInspectionPhotoPreview();}
+  catch(err){alert(err.message||'Δεν ήταν δυνατή η επεξεργασία μιας φωτογραφίας.');}
+  e.target.value='';
+});
+document.getElementById('inspDate').value=new Date().toISOString().slice(0,10);
+document.getElementById('inspectionForm').addEventListener('submit',e=>{e.preventDefault();const hiveId=document.getElementById('inspHive').value;if(!hiveId){alert('Πρόσθεσε πρώτα μια κυψέλη.');return}const frames=document.getElementById('inspFrames').value;const item={id:makeId(),hiveId,date:document.getElementById('inspDate').value,frames:frames===''?'':Number(frames),brood:document.getElementById('inspBrood').value,queen:document.getElementById('inspQueen').value,stores:document.getElementById('inspStores').value,temper:document.getElementById('inspTemper').value,health:document.getElementById('inspHealth').value.trim(),honey:document.getElementById('inspHoney').value,feed:document.getElementById('inspFeed').value,disease:document.getElementById('inspDisease').value.trim(),treatment:document.getElementById('inspTreatment').value.trim(),actions:document.getElementById('inspActions').value.trim(),notes:document.getElementById('inspNotes').value.trim(),photos:pendingInspectionPhotos.slice(),audio:pendingInspectionAudio};db.inspections.push(item);const h=db.hives.find(x=>x.id===hiveId);if(frames!=='')h.frames=Number(frames);e.target.reset();pendingInspectionPhotos=[];pendingInspectionAudio='';showInspectionPhotoPreview();showAudioPreview();document.getElementById('inspNotes').dataset.dictationBase='';document.getElementById('inspDate').value=new Date().toISOString().slice(0,10);if(save())showTab('history')});
+function renderBulkHiveList(){const box=document.getElementById('bulkHiveList');if(!box)return;const chosen=new Set(Array.from(box.querySelectorAll('input:checked')).map(x=>x.value));const sorted=db.hives.slice().sort((a,b)=>a.number.localeCompare(b.number,undefined,{numeric:true}));box.innerHTML=sorted.length?sorted.map(h=>`<label><input type="checkbox" value="${h.id}" ${chosen.has(h.id)?'checked':''}> Κυψέλη ${esc(h.number)}</label>`).join(''):'<div class="empty">Πρόσθεσε πρώτα κυψέλες.</div>'}
+function selectBulkHives(on){document.querySelectorAll('#bulkHiveList input[type=checkbox]').forEach(x=>x.checked=on)}
+document.getElementById('bulkDate').value=new Date().toISOString().slice(0,10);
+document.getElementById('bulkForm').addEventListener('submit',e=>{e.preventDefault();const ids=Array.from(document.querySelectorAll('#bulkHiveList input:checked')).map(x=>x.value);if(!ids.length){alert('Επίλεξε τουλάχιστον μία κυψέλη.');return}if(!confirm('Θα δημιουργηθούν '+ids.length+' επιθεωρήσεις με τα ίδια κοινά στοιχεία. Συνέχεια;'))return;const v=id=>document.getElementById(id).value.trim();const frames=v('bulkFrames');ids.forEach(hiveId=>{const item={id:makeId(),hiveId,date:v('bulkDate'),frames:frames===''?'':Number(frames),brood:v('bulkBrood'),queen:v('bulkQueen'),stores:v('bulkStores'),temper:v('bulkTemper'),health:v('bulkHealth'),honey:v('bulkHoney'),feed:v('bulkFeed'),disease:v('bulkDisease'),treatment:v('bulkTreatment'),actions:v('bulkActions'),notes:v('bulkNotes'),photos:[]};db.inspections.push(item);const h=db.hives.find(x=>x.id===hiveId);if(h&&frames!=='')h.frames=Number(frames)});if(save()){alert('Καταχωρίστηκαν '+ids.length+' επιθεωρήσεις.');showTab('history')}});
+function printHistory(){document.body.classList.remove('print-bulk');document.body.classList.add('print-history');window.print();document.body.classList.remove('print-history')}
+window.addEventListener('afterprint',()=>document.body.classList.remove('print-history','print-bulk'));
+function hiveName(id){return db.hives.find(h=>h.id===id)?.number||'Διαγραμμένη κυψέλη'}
+function inspectionCard(i){const h=db.hives.find(x=>x.id===i.hiveId);return `<article class="hive"><div class="hive-top"><strong>Κυψέλη ${esc(hiveName(i.hiveId))}</strong><span class="pill">${esc(i.date)}</span></div>${h&&h.photo?`<img class="hive-photo" src="${h.photo}" alt="Φωτογραφία κυψέλης ${esc(h.number)}" loading="lazy">`:''}${i.photos&&i.photos.length?`<div class="inspection-photos">${i.photos.map((src,n)=>`<img src="${src}" alt="Φωτογραφία επιθεώρησης ${n+1}" loading="lazy">`).join('')}</div>`:''}${i.audio?`<div class="voice-box"><b>Ηχογράφηση επιθεώρησης</b><audio controls preload="none" src="${i.audio}"></audio></div>`:''}<p class="muted">${i.frames!==''?'Πλαίσια: '+esc(i.frames)+' · ':''}Γόνος: ${esc(i.brood)} · Τροφές: ${esc(i.stores)}</p><p><b>Βασίλισσα:</b> ${esc(i.queen)} · <b>Συμπεριφορά:</b> ${esc(i.temper)}</p>${i.health?'<p><b>Υγεία:</b> '+esc(i.health)+'</p>':''}${i.honey?'<p><b>Μέλι:</b> '+esc(i.honey)+'</p>':''}${i.feed?'<p><b>Τροφοδότηση:</b> '+esc(i.feed)+'</p>':''}${i.disease?'<p><b>Ασθένεια / πρόβλημα:</b> '+esc(i.disease)+'</p>':''}${i.treatment?'<p><b>Θεραπεία / αγωγή:</b> '+esc(i.treatment)+'</p>':''}${i.actions?'<p><b>Εργασίες:</b> '+esc(i.actions)+'</p>':''}${i.notes?'<p>'+esc(i.notes)+'</p>':''}<div class="actions"><button class="danger" onclick="deleteInspection('${i.id}')">Διαγραφή</button></div></article>`}
+function deleteInspection(id){if(confirm('Να διαγραφεί αυτή η επιθεώρηση;')){db.inspections=db.inspections.filter(i=>i.id!==id);save()}}
+function render(){document.getElementById('statHives').textContent=db.hives.length;document.getElementById('statInspections').textContent=db.inspections.length;document.getElementById('statStrong').textContent=db.hives.filter(h=>h.frames>=8).length;document.getElementById('statNeeds').textContent=db.hives.filter(h=>h.frames<=4).length;
+const sorted=db.inspections.slice().sort((a,b)=>b.date.localeCompare(a.date));document.getElementById('recent').innerHTML=sorted.length?'<div class="hive-list">'+sorted.slice(0,4).map(inspectionCard).join('')+'</div>':'<div class="empty">Δεν υπάρχουν ακόμη επιθεωρήσεις.</div>';
+const q=(document.getElementById('hiveSearch')?.value||'').toLowerCase();const hs=db.hives.filter(h=>(h.number+' '+h.location).toLowerCase().includes(q)).sort((a,b)=>a.number.localeCompare(b.number,undefined,{numeric:true}));document.getElementById('hiveList').innerHTML=hs.length?'<div class="hive-list">'+hs.map(h=>`<article class="hive"><div class="hive-top"><strong>Κυψέλη ${esc(h.number)}</strong><span class="pill">${h.frames} πλαίσια</span></div>${h.photo?`<img class="hive-photo" src="${h.photo}" alt="Φωτογραφία κυψέλης ${esc(h.number)}" loading="lazy">`:''}<p class="muted">${esc(h.location||'Χωρίς τοποθεσία')} · Βασίλισσα: ${esc(h.queen)}</p>${h.notes?'<p>'+esc(h.notes)+'</p>':''}<div class="actions"><button class="secondary" onclick="editHive('${h.id}')">Επεξεργασία</button><button class="danger" onclick="deleteHive('${h.id}')">Διαγραφή</button></div></article>`).join('')+'</div>':'<div class="empty">Δεν έχεις προσθέσει κυψέλες ακόμη.</div>';
+const hq=(document.getElementById('historySearch')?.value||'').toLowerCase();const hist=sorted.filter(i=>hiveName(i.hiveId).toLowerCase().includes(hq));document.getElementById('historyList').innerHTML=hist.length?'<div class="hive-list">'+hist.map(inspectionCard).join('')+'</div>':'<div class="empty">Δεν βρέθηκαν επιθεωρήσεις.</div>';fillHiveSelect();fillChartHiveSelect();if(!document.getElementById('charts').classList.contains('hidden'))drawHiveChart()}
+
+function fillChartHiveSelect(){
+  const s=document.getElementById('chartHive');if(!s)return;const old=s.value;
+  s.innerHTML=db.hives.slice().sort((a,b)=>a.number.localeCompare(b.number,undefined,{numeric:true})).map(h=>`<option value="${h.id}">Κυψέλη ${esc(h.number)}${h.location?' — '+esc(h.location):''}</option>`).join('');
+  if(db.hives.some(h=>h.id===old))s.value=old;
+  else if(db.hives.length)s.value=db.hives[0].id;
+}
+function drawHiveChart(){
+  const host=document.getElementById('hiveChart'),summary=document.getElementById('chartSummary'),sel=document.getElementById('chartHive');if(!host||!summary||!sel)return;
+  const hive=db.hives.find(h=>h.id===sel.value);
+  if(!hive){host.innerHTML='<div class="empty">Πρόσθεσε πρώτα μια κυψέλη για να δεις την πορεία της.</div>';summary.textContent='';return}
+  const points=db.inspections.filter(i=>i.hiveId===hive.id&&i.frames!==''&&i.frames!==null&&Number.isFinite(Number(i.frames))).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!points.length){host.innerHTML='<div class="empty">Δεν υπάρχουν ακόμη αριθμητικές καταγραφές πλαισίων για την κυψέλη '+esc(hive.number)+'. Στην επόμενη επιθεώρηση συμπλήρωσε το πεδίο «Πλαίσια με πληθυσμό».</div>';summary.textContent='';return}
+  const W=720,H=300,L=54,R=22,T=24,B=58,plotW=W-L-R,plotH=H-T-B;
+  const vals=points.map(p=>Number(p.frames)),max=Math.max(4,...vals),min=Math.min(0,...vals),range=Math.max(1,max-min);
+  const x=k=>L+(points.length===1?plotW/2:k*plotW/(points.length-1));
+  const y=v=>T+plotH-(v-min)/range*plotH;
+  let grid='';for(let j=0;j<=4;j++){const v=min+(max-min)*j/4,yy=y(v);grid+=`<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="#e8dfcf" stroke-width="1"/><text x="${L-12}" y="${yy+4}" text-anchor="end" font-size="12" fill="#777064">${Number(v.toFixed(1))}</text>`}
+  const poly=points.map((p,k)=>`${x(k)},${y(Number(p.frames))}`).join(' ');
+  const dots=points.map((p,k)=>`<circle cx="${x(k)}" cy="${y(Number(p.frames))}" r="5" fill="#a66d13" stroke="#fffdf8" stroke-width="2"><title>${esc(p.date)}: ${esc(p.frames)} πλαίσια</title></circle>`).join('');
+  const labels=points.map((p,k)=>{if(points.length>8&&k%Math.ceil(points.length/7)!==0&&k!==points.length-1)return '';return `<text x="${x(k)}" y="${H-28}" text-anchor="middle" font-size="11" fill="#625b50">${esc(p.date.slice(5))}</text>`}).join('');
+  host.innerHTML=`<div style="width:100%;overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Γράφημα πλαισίων με πληθυσμό για την κυψέλη ${esc(hive.number)}" style="width:100%;min-width:320px;height:auto;display:block"><text x="${L}" y="15" font-size="12" fill="#625b50">Πλαίσια με πληθυσμό</text>${grid}<line x1="${L}" y1="${T}" x2="${L}" y2="${T+plotH}" stroke="#b9ad99"/><line x1="${L}" y1="${T+plotH}" x2="${W-R}" y2="${T+plotH}" stroke="#b9ad99"/><polyline points="${poly}" fill="none" stroke="#a66d13" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${dots}${labels}</svg></div>`;
+  const first=vals[0],last=vals[vals.length-1],diff=last-first;
+  summary.textContent=`Καταγραφές: ${points.length} · Πρώτη: ${first} πλαίσια (${points[0].date}) · Τελευταία: ${last} πλαίσια (${points[points.length-1].date}) · Μεταβολή: ${diff>0?'+':''}${diff} πλαίσια`;
+}
+document.getElementById('chartHive').addEventListener('change',drawHiveChart);
+
+document.getElementById('hiveSearch').addEventListener('input',render);document.getElementById('historySearch').addEventListener('input',render);
+function exportData(){const blob=new Blob([JSON.stringify({...db,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='melissokomeio-antigrafo-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)}
+document.getElementById('importFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!Array.isArray(x.hives)||!Array.isArray(x.inspections))throw Error();if(!confirm('Η εισαγωγή θα αντικαταστήσει τα υπάρχοντα δεδομένα. Συνέχεια;'))return;db={hives:x.hives,inspections:x.inspections};save();alert('Η εισαγωγή ολοκληρώθηκε.')}catch(err){alert('Το αρχείο δεν είναι έγκυρο αντίγραφο της εφαρμογής.')}e.target.value=''});
+render();
+renderAvailableHiveLabels();
+</script>
+
+<script>
+// PWA: η αποθήκευση των δεδομένων εξακολουθεί να γίνεται με το ίδιο κλειδί localStorage.
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(err => console.warn('Service worker:', err)));
+}
+</script>
+</body></html>
